@@ -14,6 +14,7 @@ class Order(models.Model):
     )
     order_time = models.TimeField(auto_now_add=True)
     total_price = models.DecimalField(max_digits=8, decimal_places=2)
+    vendor_id = models.IntegerField()
     user = models.ForeignKey(
         "users.User", on_delete=models.PROTECT, related_name="user_orders"
     )
