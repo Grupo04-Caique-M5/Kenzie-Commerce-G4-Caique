@@ -8,7 +8,7 @@ from rest_framework.generics import (
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .models import User
-from .serializers import UserSerializer, UserActiveSerializer
+from .serializers import UserSerializer
 from .permissions import IsAccounterOwner
 
 
@@ -37,13 +37,3 @@ class UserDetailView(RetrieveUpdateDestroyAPIView):
     def perform_destroy(self, instance):
         instance.is_active = False
         instance.save()
-
-
-class UserActiveView(UpdateAPIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated, IsAdminUser]
-
-    queryset = User.objects.all()
-    serializer_class = UserActiveSerializer
-
-    lookup_url_kwarg = "user_id"
