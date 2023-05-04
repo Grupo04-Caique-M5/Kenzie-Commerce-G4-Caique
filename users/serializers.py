@@ -29,7 +29,6 @@ class UserSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-
     class Meta:
         model = User
         fields = [
@@ -46,3 +45,15 @@ class UserSerializer(serializers.ModelSerializer):
                 "write_only": True,
             },
         }
+
+
+class UserActiveSerializer(serializers.ModelSerializer):
+    def update(self, instance: User, validated_data: dict) -> User:
+        instance.is_active = True
+        instance.save()
+
+        return instance
+
+    class Meta:
+        model = User
+        fields = []
