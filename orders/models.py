@@ -5,12 +5,11 @@ class StatusChoices(models.TextChoices):
     ORDER_RECEIVED = "Pedido Realizado"
     ON_GOING = "Em Andamento"
     COMPLETE = "Entregue"
-    NOT_INFORMED = "Não Informado"
 
 
 class Order(models.Model):
     status = models.CharField(
-        max_length=30, choices=StatusChoices.choices, default=StatusChoices.NOT_INFORMED
+        max_length=30, choices=StatusChoices.choices, default=StatusChoices.ORDER_RECEIVED
     )
     order_time = models.TimeField(auto_now_add=True)
     total_price = models.DecimalField(max_digits=8, decimal_places=2)
