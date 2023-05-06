@@ -20,4 +20,3 @@ class CartProducts(models.Model):
         on_delete=models.CASCADE,
         related_name="cart_cart",
     )
-    storage = models.IntegerField(default=1)

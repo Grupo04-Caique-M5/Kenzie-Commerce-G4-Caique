@@ -42,7 +42,7 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ["id", "name", "storage", "available", "price", "category", "user"]
-        read_only_fields = ["user"]
+        read_only_fields = ["user", 'available']
         extra_kwargs = {
             "name": {
                 "validators": [

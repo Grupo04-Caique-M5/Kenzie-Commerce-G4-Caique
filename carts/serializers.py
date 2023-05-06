@@ -44,13 +44,4 @@ class CartSerializer(serializers.ModelSerializer):
         model = Cart
         fields = ["product_id", "user", "cart_products"]
         read_only_fields = ["user", "products"]
-        # extra_kwargs = {"user": {"write_only": True}}
 
-        # {
-        #     cart_id = 1,
-        #     product = {
-        #         ...
-        #     }
-        #     user_id = 1
-        #     storage = 1
-        # }
