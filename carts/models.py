@@ -7,13 +7,6 @@ class Cart(models.Model):
         on_delete=models.PROTECT,
         related_name="cart",
     )
-    # products = models.ForeignKey(
-    #     "products.Product",
-    #     related_name="carts",
-    #     on_delete=models.PROTECT,
-    #     null=True,
-    #     default=None
-    # )
 
 
 class CartProducts(models.Model):

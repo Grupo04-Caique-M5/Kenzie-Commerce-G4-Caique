@@ -7,30 +7,18 @@ from django.shortcuts import get_object_or_404
 
 
 class CartProductSerializer(serializers.ModelSerializer):
+    product = ProductSerializer(read_only=True)
+
     class Meta:
         model = CartProducts
         fields = ["product", "cart"]
-        # read_only_fields = []
-        # extra_kwargs = {"user": {"write_only": True}}
+        read_only_fields = []
+        extra_kwargs = {"cart": {"write_only": True}}
 
 
 class CartSerializer(serializers.ModelSerializer):
     product_id = serializers.IntegerField(write_only=True)
-    # cart_products = CartProductSerializer(read_only=True)
-    product = ProductSerializer(read_only=True)
-
-    # products = serializers.SerializerMethodField(method_name="get_products")
-
-    # def get_products(self, obj):
-    #     cart = Cart.objects.filter(user=self.context["request"].user).first()
-
-    #     if cart:
-    #         teste = CartProducts.objects.filter(cart=cart).values_list(
-    #             "product", flat=True
-    #         )
-    #         print("teste", teste)
-    #         return teste
-    #     return []
+    cart_products = CartProductSerializer(many=True, read_only=True, source="cart_cart")
 
     def create(self, validated_data: dict):
         user = validated_data.pop("user")
@@ -48,31 +36,21 @@ class CartSerializer(serializers.ModelSerializer):
         if product.storage == 0:
             raise KeyError("product is empty in storage")
 
-        # verify_product = CartProducts.objects.filter(product=product).first()
+        CartProducts.objects.create(product=product, cart=cart)
 
-        # print(verify_product)
-
-        # if verify_product:
-        #     verify_product.storage += 1
-        #     verify_product.save()
-        #     print(verify_product.storage)
-        #     return verify_product
-
-        cart_product = CartProducts.objects.create(product=product, cart=cart)
-
-        # all_products = Product.objects.filter(cart_product=cart_product)
-        teste = CartProducts.objects.filter(cart=cart).values_list("product", flat=True)
-
-        print("teste", teste)
-        print(cart.cart_cart.all())
-
-        # self.products = all_products
-
-        self.products = teste
-        return cart_product
+        return cart
 
     class Meta:
-        model = CartProducts
-        fields = ["product_id", "cart", "product", "storage"]
-        read_only_fields = ["cart", "product", "storage"]
+        model = Cart
+        fields = ["product_id", "user", "cart_products"]
+        read_only_fields = ["user", "products"]
         # extra_kwargs = {"user": {"write_only": True}}
+
+        # {
+        #     cart_id = 1,
+        #     product = {
+        #         ...
+        #     }
+        #     user_id = 1
+        #     storage = 1
+        # }
