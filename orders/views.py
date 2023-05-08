@@ -1,16 +1,15 @@
 from django.shortcuts import render
 from .models import Order
-from .serializers import OrderSerializer
+from .serializers import OrderListSerializer
 from rest_framework import generics
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
-# Create your views here.
 class OrderView(generics.ListCreateAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = []
 
-    serializer_class = OrderSerializer
+    serializer_class = OrderListSerializer
     queryset = Order.objects.all()
 
     def perform_create(self, serializer):
