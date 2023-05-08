@@ -2,18 +2,30 @@ from rest_framework import serializers
 from .models import Order, StatusChoices
 from products.serializers import ProductSerializer
 from products.models import Product
-from carts.serializers import CartProductSerializer, CartSerializer
-from users.serializers import UserSerializer
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    class Meta:
-        status = serializers.ChoiceField(
-            choices=StatusChoices, default=StatusChoices.ORDER_RECEIVED
-        )
+    status = serializers.ChoiceField(
+        choices=StatusChoices, default=StatusChoices.ORDER_RECEIVED
+    )
 
+    def update(self, instance, validated_data):
+        if instance.status:
+            instance.status = validated_data.get("status")
+            instance.save()
+            return instance
+
+    class Meta:
         model = Order
-        fields = ["total_price", "vendor_id", "user", "cart_products", "status"]
+        fields = [
+            "id", 
+            "vendor_id", 
+            "total_price", 
+            "status", 
+            "user", 
+            "order_time",
+            "cart_products", 
+        ]
         read_only_fields = ["user", "total_price"]
 
 
@@ -29,22 +41,8 @@ class OrderListSerializer(serializers.ModelSerializer):
             "product", flat=True
         )
         new_products = [Product.objects.get(id=product) for product in cart_products]
-        new_products_dict = ProductSerializer(new_products, many=True)  # ❗❗❗ OBS ❗❗❗
+        new_products_dict = ProductSerializer(new_products, many=True)
 
-        # validated_data["cart_products"] = new_products_dict.data
-
-        # prices_list = user.cart.cart_cart.filter(cart=cart).values_list(
-        #     "product__price", flat=True
-        # )
-        # prices_list = [price for price in prices_list]
-        # print("types_1", [type(price) for price in prices_list])
-        # prices = list(prices_list)
-
-        # validated_data["total_price"] = sum(prices_list)
-
-        # vendors_list = user.cart.cart_cart.filter(cart=cart).values_list(
-        #     "product__user", flat=True
-        # )
         vendors = set([product["user"] for product in new_products_dict.data])
 
         list_orders = []
@@ -70,6 +68,10 @@ class OrderListSerializer(serializers.ModelSerializer):
         return list_orders
 
     def to_representation(self, instance):
+        print(self.context["request"], self.context)
+        print("-" * 100)
+        print(instance)
+        print("-" * 100)
         data = super().to_representation(instance)
         print(data)
         data["orders"] = OrderSerializer(instance, many=True).data
@@ -78,6 +80,13 @@ class OrderListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ["total_price", "vendor_id", "cart_products", "orders", "status"]
+        fields = [
+            "id", 
+            "vendor_id", 
+            "status",
+            "total_price", 
+            "orders", 
+            "cart_products", 
+        ]
         read_only_fields = ["user", "total_price"]
         extra_kwargs = {"orders": [{"cart_products": [{"user": {"write_only": True}}]}]}
