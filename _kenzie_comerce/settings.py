@@ -51,6 +51,7 @@ MY_APPS = [
 
 THIRD_PARTY_APPS = [
     "rest_framework",
+    "drf_spectacular",
 ]
 
 DJANGO_APPS = [
@@ -99,7 +100,15 @@ WSGI_APPLICATION = "_kenzie_comerce.wsgi.application"
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "PAGE_SIZE": 5,
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "E-commerce API",
+    "DESCRIPTION": "Group project carried out by student developers",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
 }
 
 # Database
