@@ -9,4 +9,4 @@ class OrderPermission(permissions.BasePermission):
         return request.user.is_authenticated and request.user.is_staff
 
     def has_object_permission(self, request, view, obj):
-        return request.user.is_staff and obj.user == request.user
+        return request.user.is_staff and obj.vendor_id == request.user.id
