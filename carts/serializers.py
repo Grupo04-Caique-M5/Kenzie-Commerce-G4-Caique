@@ -33,9 +33,6 @@ class CartSerializer(serializers.ModelSerializer):
             id=validated_data["product_id"],
         )
 
-        if product.storage == 0:
-            raise KeyError("product is empty in storage")
-
         CartProducts.objects.create(product=product, cart=cart)
 
         return cart
@@ -44,4 +41,3 @@ class CartSerializer(serializers.ModelSerializer):
         model = Cart
         fields = ["product_id", "user", "cart_products"]
         read_only_fields = ["user", "products"]
-
