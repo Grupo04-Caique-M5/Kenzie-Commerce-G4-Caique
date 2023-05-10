@@ -56,6 +56,15 @@ class OrderView(generics.ListCreateAPIView):
             return Order.objects.all()
 
         if user_obj.is_staff:
+            status_filter = self.request.query_params.get("status", None)
+            if status_filter:
+                order_filter = Order.objects.filter(status__iexact=status_filter)
+                orders_list = []
+                for order in order_filter:
+                    if order.vendor_id == user_obj.id:
+                        orders_list.append(order)
+
+                return orders_list
             return Order.objects.filter(vendor_id=user_obj.id)
 
         return Order.objects.filter(user=user_obj)
